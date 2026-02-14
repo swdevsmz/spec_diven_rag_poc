@@ -59,10 +59,9 @@ VS Code 拡張機能（DevContainer 内で自動インストール）
   - **Dev Containers**（ms-vscode-remote.remote-containers）
 
 ### Step 2: WSL2（Debian）のインストール
-- `wsl_setup_scripts/wsl_debian_install.ps1` をローカル PC にダウンロード
-- PowerShell（管理者権限）でスクリプトを実行
+- PowerShell（管理者権限）で以下のコマンドを実行
   ```powershell
-  .\wsl_debian_install.ps1
+  iwr -Uri "https://raw.githubusercontent.com/swdevsmz/spec_diven_rag_poc/main/wsl_setup_scripts/wsl_debian_install.ps1" -UseBasicParsing | iex
   ```
 - スクリプトが Debian をインストールし、初回起動時にユーザー名とパスワードの設定を求めます。
 
