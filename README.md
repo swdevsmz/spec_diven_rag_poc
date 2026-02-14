@@ -92,8 +92,8 @@ GitHub Spec Kit を使用した仕様駆動開発（Spec-Driven Development）�
 
 ```bash
 # プロジェクトの初期化（AI アシスタントの選択を含む）
-# specify init <PROJECT_NAME> --ai copilot
-specify init rag-chatbot-project --ai copilot
+# --here オプションで現在のディレクトリに直接作成
+specify init --here --ai copilot
 
 # インストール済みのツール確認
 specify check
@@ -101,11 +101,12 @@ specify check
 
 ※ 各コマンド実行時に生成・更新される主なファイル／ディレクトリ（2026年2月14日実行、CLI v0.1.0、Template v0.0.95）:
 
-- **specify init rag-chatbot-project --ai copilot**
-  - `<PROJECT_NAME>` というサブディレクトリ（この例では `rag-chatbot-project/`）を作成し、その中に以下のファイル／ディレクトリを生成します（合計31ファイル、9ディレクトリ）。
+- **specify init --here --ai copilot**
+  - `--here` オプションを使用すると、現在のディレクトリ（リポジトリルート）に直接以下のファイル／ディレクトリを生成します（合計31ファイル、9ディレクトリ）。
+  - `<PROJECT_NAME>` を指定した場合は、サブディレクトリが作成されます。
   
   ```
-  rag-chatbot-project/
+  /workspaces/spec_diven_rag_poc/  # リポジトリルート
   ├── .github/
   │   ├── agents/                          # GitHub Copilot Agent 定義ファイル（9個）
   │   │   ├── speckit.analyze.agent.md
@@ -157,7 +158,7 @@ specify check
 - **specify version**
   - Specify CLI とテンプレートのバージョン情報を表示します。ファイルは作成されません。
 
-（注）テンプレートの内容やファイル名は Specify のバージョンや選択した AI アシスタント、スクリプト種別により変わる可能性があります。最新の情報は実行後に `<PROJECT_NAME>/` 配下を直接確認してください。
+（注）テンプレートの内容やファイル名は Specify のバージョンや選択した AI アシスタント、スクリプト種別により変わる可能性があります。`--here` オプションを使用した場合は `.github/` および `.specify/` 配下を、`<PROJECT_NAME>` を指定した場合は `<PROJECT_NAME>/` 配下を直接確認してください。
 
 
 ### GitHub Spec Kit の 5つの開発フェーズ
