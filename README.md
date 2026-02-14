@@ -10,3 +10,62 @@
 - **DevContainer**: Windows + Podman + WSL2 でチーム全体が同じ環境を共有
 
 ## 環境構成
+
+```text
+Windows 11
+├─ Podman Desktop
+└─ WSL2 (Debian)
+└─ DevContainer
+  ├─ Python 3.11+
+  ├─ uv（パッケージマネージャー）
+  ├─ GitHub Spec Kit (specify-cli)
+  ├─ GitHub Copilot
+  └─ Development Tools
+```
+
+
+## 環境構築完了 (Step 1-3)
+
+### Step 1: DevContainer セットアップスクリプト
+- [.devcontainer/post-create.sh](.devcontainer/post-create.sh) - uv と Specify CLI の自動インストール
+
+### Step 2: DevContainer 設定
+- [.devcontainer/devcontainer.json](.devcontainer/devcontainer.json) - Python 3.11 ベースイメージ、Spec Kit 関連拡張機能の有効化
+
+### Step 3: Spec Kit ガバナンス
+- [.speckit/constitution.md](.speckit/constitution.md) - プロジェクト原則と開発方針
+- [.speckit/config.yaml](.speckit/config.yaml) - Spec Kit メタデータ設定
+
+## 次のステップ
+
+### Step 5: 仕様駆動開発の実施
+
+1. DevContainer 起動確認
+   ```bash
+   specify check
+
+2. GitHub Copilot Chat で仕様定義開始
+
+VS Code 内で Ctrl+Shift+i で Copilot Chat を起動
+/speckit.constitution で憲法を確認
+/speckit.specify で実装要件の定義を開始
+仕様・計画ドキュメントを specs/ に保存
+
+プロジェクト構成
+
+```text
+.
+├── .devcontainer/
+│   ├── devcontainer.json              # DevContainer 設定
+│   ├── post-create.sh                 # セットアップスクリプト
+│   └── [README.md](http://_vscodecontentref_/0)                      # DevContainer ガイド
+│
+├── .speckit/
+│   ├── constitution.md                # プロジェクト原則
+│   └── config.yaml                    # Spec Kit 設定
+│
+├── specs/                             # 仕様・計画ドキュメント
+│   └── [Step 5で作成]
+│
+└── [README.md](http://_vscodecontentref_/1)                          # このファイル
+```
