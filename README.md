@@ -27,7 +27,6 @@ Windows 11
                 ├─ GitHub Copilot
                 └─ Development Tools
                       ├─ git
-                      ├─ github-cli (gh)
                       └─ Node.js 24
 
 VS Code 拡張機能（ホスト側 Windows）
@@ -93,7 +92,8 @@ GitHub Spec Kit を使用した仕様駆動開発（Spec-Driven Development）�
 
 ```bash
 # プロジェクトの初期化（AI アシスタントの選択を含む）
-specify init <PROJECT_NAME> --ai copilot
+# specify init <PROJECT_NAME> --ai copilot
+specify init spec_diven_rag_poc --ai copilot
 
 # インストール済みのツール確認
 specify check
@@ -201,37 +201,3 @@ Spec Kit の公式フローに加えて、このプロジェクトでは以下�
 - **PR チェック**: `.github/PULL_REQUEST_TEMPLATE.md` を使用して、仕様へのリンクを必須化
 
 詳細な手順と例は実装進行に伴い充実させます。
-
-## (補足) GitHub Copilot CLI について
-
-### 概要
-`gh copilot` は GitHub CLI に組み込まれたターミナルベースの補助ツールです。このプロジェクトでは、Spec Kit の主流（AI アシスタント内での slash commands）を補完する補助的な用途として位置づけられます。
-
-### セットアップ
-
-DevContainer 内で初回利用時に Copilot CLI が自動ダウンロードされます（保存先: `/home/vscode/.local/share/gh/copilot`）。
-
-初回実行時に認証を行ってください：
-```bash
-gh auth login
-```
-
-### 基本コマンド例
-
-```bash
-# Copilot CLI の起動（対話型）
-gh copilot
-
-# 特定のプロンプトを直接送信
-gh copilot -p "Python で Hello World を出力するコードを書いて"
-
-# インストール済み CLI を削除
-gh copilot --remove
-```
-
-### 使用場面
-- 簡単なコード補助タスク
-- ドキュメント要約
-- その他の補助的な質問
-
-注記: `/speckit.*` slash commands は AI アシスタント内でのみ利用可能であり、`gh copilot` CLI 経由では直接実行できません。Spec Kit の主流ワークフローには、選択した AI アシスタント（GitHub Copilot Chat など）を使用してください。
