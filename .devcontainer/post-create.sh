@@ -25,7 +25,7 @@ fi
 echo "✅ Environment setup complete!"
 if command -v specify &> /dev/null; then
     echo "📋 Spec Kit version:"
-    specify --version || true
+    specify --help 2>&1 | head -1 || echo "✅ Specify CLI is installed"
 fi
 
 echo "✨ Ready for Spec-Driven Development!"
