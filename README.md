@@ -102,6 +102,31 @@ specify check
 specify version
 ```
 
+※ 各コマンド実行時に生成・更新される主なファイル／ディレクトリ（実行例に基づく具体例）:
+
+- specify init
+  - Git 管理を初期化したプロジェクトを作成し、以下のようなファイル／ディレクトリが生成されます（テンプレートや Specify のバージョンにより差異あり）。
+    - `.specify/`
+      - `memory/constitution.md`（プロジェクト原則の雛形）
+      - `scripts/`（初期化・補助スクリプト、例: `bash/check-prerequisites.sh`, `bash/create-new-feature.sh`, `update-agent-context.sh` など）
+      - `templates/`（各種テンプレート: `agent-file-template.md`, `checklist-template.md`, `constitution-template.md`, `plan-template.md`, `spec-template.md`, `tasks-template.md` など）
+    - `.github/`
+      - `agents/`（事前定義された agent 定義ファイル、例: `speckit.specify.agent.md`, `speckit.plan.agent.md`, `speckit.tasks.agent.md` 等）
+      - `prompts/`（agent が利用するプロンプト雛形、例: `speckit.specify.prompt.md`, `speckit.plan.prompt.md` 等）
+    - `.vscode/settings.json`（エディタ設定の雛形）
+    - `.git/`（ローカルリポジトリ初期化）
+
+  - 目的: AI アシスタント（例: copilot）向けの slash-commands やテンプレート群をプロジェクトに導入し、/speckit.* 系コマンドを利用できる状態にします。
+
+- specify check
+  - 環境や依存ツールの診断を実行し、標準出力で結果を返します。通常は恒久的なファイルを新規作成しません（ログや一時ファイルが出力されるケースあり）。
+
+- specify version
+  - Specify CLI のバージョン情報を表示するのみで、ファイルは作成されません。
+
+（注）上記は実際に `specify init` を実行して確認した出力に基づく例です。テンプレートの内容やファイル名は Specify のリリースや選択した AI／スクリプト種別により変わるため、実行後はプロジェクトルートの `.specify/` と `.github/` 配下を直接確認してください。
+
+
 ### GitHub Spec Kit の 5つの開発フェーズ
 
 Spec Kit では、以下の 5つのフェーズを順序に実行して開発を進めます：
