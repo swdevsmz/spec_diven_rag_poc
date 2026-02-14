@@ -93,35 +93,71 @@ GitHub Spec Kit を使用した仕様駆動開発（Spec-Driven Development）�
 ```bash
 # プロジェクトの初期化（AI アシスタントの選択を含む）
 # specify init <PROJECT_NAME> --ai copilot
-specify init spec_diven_rag_poc --ai copilot
+specify init rag-chatbot-project --ai copilot
 
 # インストール済みのツール確認
 specify check
 ```
 
-※ 各コマンド実行時に生成・更新される主なファイル／ディレクトリ（実行例に基づく具体例）:
+※ 各コマンド実行時に生成・更新される主なファイル／ディレクトリ（2026年2月14日実行、CLI v0.1.0、Template v0.0.95）:
 
-- specify init
-  - Git 管理を初期化したプロジェクトを作成し、以下のようなファイル／ディレクトリが生成されます（テンプレートや Specify のバージョンにより差異あり）。
-    - `.specify/`
-      - `memory/constitution.md`（プロジェクト原則の雛形）
-      - `scripts/`（初期化・補助スクリプト、例: `bash/check-prerequisites.sh`, `bash/create-new-feature.sh`, `update-agent-context.sh` など）
-      - `templates/`（各種テンプレート: `agent-file-template.md`, `checklist-template.md`, `constitution-template.md`, `plan-template.md`, `spec-template.md`, `tasks-template.md` など）
-    - `.github/`
-      - `agents/`（事前定義された agent 定義ファイル、例: `speckit.specify.agent.md`, `speckit.plan.agent.md`, `speckit.tasks.agent.md` 等）
-      - `prompts/`（agent が利用するプロンプト雛形、例: `speckit.specify.prompt.md`, `speckit.plan.prompt.md` 等）
-    - `.vscode/settings.json`（エディタ設定の雛形）
-    - `.git/`（ローカルリポジトリ初期化）
+- **specify init rag-chatbot-project --ai copilot**
+  - `<PROJECT_NAME>` というサブディレクトリ（この例では `rag-chatbot-project/`）を作成し、その中に以下のファイル／ディレクトリを生成します（合計31ファイル、9ディレクトリ）。
+  
+  ```
+  rag-chatbot-project/
+  ├── .github/
+  │   ├── agents/                          # GitHub Copilot Agent 定義ファイル（9個）
+  │   │   ├── speckit.analyze.agent.md
+  │   │   ├── speckit.checklist.agent.md
+  │   │   ├── speckit.clarify.agent.md
+  │   │   ├── speckit.constitution.agent.md
+  │   │   ├── speckit.implement.agent.md
+  │   │   ├── speckit.plan.agent.md
+  │   │   ├── speckit.specify.agent.md
+  │   │   ├── speckit.tasks.agent.md
+  │   │   └── speckit.taskstoissues.agent.md
+  │   └── prompts/                         # Agent 用プロンプトテンプレート（9個）
+  │       ├── speckit.analyze.prompt.md
+  │       ├── speckit.checklist.prompt.md
+  │       ├── speckit.clarify.prompt.md
+  │       ├── speckit.constitution.prompt.md
+  │       ├── speckit.implement.prompt.md
+  │       ├── speckit.plan.prompt.md
+  │       ├── speckit.specify.prompt.md
+  │       ├── speckit.tasks.prompt.md
+  │       └── speckit.taskstoissues.prompt.md
+  ├── .specify/
+  │   ├── memory/
+  │   │   └── constitution.md              # プロジェクト原則の雛形
+  │   ├── scripts/
+  │   │   └── bash/                        # 補助スクリプト（5個）
+  │   │       ├── check-prerequisites.sh
+  │   │       ├── common.sh
+  │   │       ├── create-new-feature.sh
+  │   │       ├── setup-plan.sh
+  │   │       └── update-agent-context.sh
+  │   └── templates/                       # 各種ドキュメントテンプレート（6個）
+  │       ├── agent-file-template.md
+  │       ├── checklist-template.md
+  │       ├── constitution-template.md
+  │       ├── plan-template.md
+  │       ├── spec-template.md
+  │       └── tasks-template.md
+  └── .vscode/
+      └── settings.json                    # VSCode エディタ設定
+  ```
 
-  - 目的: AI アシスタント（例: copilot）向けの slash-commands やテンプレート群をプロジェクトに導入し、/speckit.* 系コマンドを利用できる状態にします。
+  - **目的**: GitHub Copilot と連携した `/speckit.*` スラッシュコマンド（constitution、specify、plan、tasks、implement 等）を利用可能にし、仕様駆動開発のワークフローを実現します。
+  - **注意**: 既存の Git リポジトリがある場合は `.git/` の新規作成はスキップされます。
 
-- specify check
-  - 環境や依存ツールの診断を実行し、標準出力で結果を返します。通常は恒久的なファイルを新規作成しません（ログや一時ファイルが出力されるケースあり）。
+- **specify check**
+  - 環境や依存ツールの診断を実行し、標準出力で結果を返します。ファイルは作成されません。
 
-- specify version
-  - Specify CLI のバージョン情報を表示するのみで、ファイルは作成されません。
+- **specify version**
+  - Specify CLI とテンプレートのバージョン情報を表示します。ファイルは作成されません。
 
-（注）上記は実際に `specify init` を実行して確認した出力に基づく例です。テンプレートの内容やファイル名は Specify のリリースや選択した AI／スクリプト種別により変わるため、実行後はプロジェクトルートの `.specify/` と `.github/` 配下を直接確認してください。
+（注）テンプレートの内容やファイル名は Specify のバージョンや選択した AI アシスタント、スクリプト種別により変わる可能性があります。最新の情報は実行後に `<PROJECT_NAME>/` 配下を直接確認してください。
 
 
 ### GitHub Spec Kit の 5つの開発フェーズ
