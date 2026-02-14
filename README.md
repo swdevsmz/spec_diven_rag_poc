@@ -42,15 +42,6 @@ VS Code 拡張機能（DevContainer 内で自動インストール）
 └─ Ruff（charliermarsh.ruff）
 ```
 
-### GitHub Copilot CLI (`gh copilot`)
-- 説明: この DevContainer では `gh` に `copilot` コマンドが組み込まれており、初回実行時に Copilot CLI がダウンロードされます（保存先: `/home/vscode/.local/share/gh/copilot`）。
-- 認証: 事前にコンテナ内で `gh auth login` を実行してください。
-- 基本コマンド例:
-  - `gh copilot`                 # 最初のダウンロード + 実行
-  - `gh copilot --remove`        # ダウンロード済み CLI を削除
-  - `gh copilot -p "<prompt>"`  # 例: `gh copilot -p "Summarize README.md"`
-- 備考: `.devcontainer/post-create.sh` は `gh-copilot` 拡張のインストールを試みますが、`gh` が既に `copilot` コマンドを提供している場合は拡張の追加インストールは不要です。
-
 ## 環境構築
 
 ### Step 1: VS Code と拡張機能のインストール
@@ -92,62 +83,101 @@ VS Code 拡張機能（DevContainer 内で自動インストール）
     specify check
     ```
 
-## 仕様駆動開発の実施
+## 仕様駆動開発のワークフロー
 
-以下はこのリポジトリでの仕様駆動（Spec-Driven Development）を実践するための手順です。短期的なワークフロー、主要コマンド、および PR 作成時のチェックリストを含みます。
+GitHub Spec Kit を使用した仕様駆動開発（Spec-Driven Development）のワークフローを以下に示します。このフローは公式の 5つのフェーズに基づき、プロジェクト独自の GitHub Issue/PR 連携を組み合わせたものです。
 
-1. 前提確認（DevContainer 内）
-- DevContainer 内で以下を実行してツールが利用可能か確認します:
-  - specify check
-  - gh --version
-  - gh auth login  # 必要に応じて認証を行ってください
+### Specify CLI の基本コマンド
 
-2. 仕様（Spec）の作成
-- `specs/` ディレクトリを作成し、各機能について Markdown 形式で Spec を追加します（例: `specs/feature-x.spec.md`）。
-- 各 Spec に含める項目:
-  - 目的
-  - ユーザーストーリー
-  - 受け入れ基準（Acceptance Criteria）
-  - 検証方法（対応するテストや手順）
+プロジェクト初期化と環境確認：
 
-3. Issue の作成（gh）
-- Spec を書いたら対応する Issue を作成し、Spec へのリンクを含めます:
-  - gh issue create --title "Spec: feature-x" --body "See specs/feature-x.spec.md" --label spec
+```bash
+# プロジェクトの初期化（AI アシスタントの選択を含む）
+specify init <PROJECT_NAME> --ai copilot
 
-4. ブランチ作成と実装
-- ブランチ命名例: `spec/feature-x` または `feat/spec-feature-x`
-  - git checkout -b spec/feature-x
-- 実装は Spec の受け入れ基準に従って行います。
+# インストール済みのツール確認
+specify check
 
-5. ローカル検証
-- 仕様に記載した検証方法に従いテスト・検証を行います。例:
-  - specify check
-  - pytest tests/test_feature_x.py
+# Specify バージョン確認
+specify version
+```
 
-6. PR 作成（必須: Spec へのリンク）
-- PR を作成する際、本文に Spec へのリンクと受け入れ基準を必ず含めてください:
-  - gh pr create --title "Implement feature-x (spec)" --body "Spec: specs/feature-x.spec.md\nAcceptance: ..." --base main
-- `.github/PULL_REQUEST_TEMPLATE.md` を利用して Spec のリンクを必須化しています。
+### GitHub Spec Kit の 5つの開発フェーズ
 
-7. レビューとマージ
-- レビューでは以下を必ずチェックしてください:
-  - 仕様の各受け入れ基準が満たされていること
-  - テストが通っていること
-  - Spec へのリンクが正しいこと
-- マージ例:
-  - gh pr merge <pr-number> --merge --delete-branch
+Spec Kit では、以下の 5つのフェーズを順序に実行して開発を進めます：
 
-8. 仕様の更新ルール
-- 既存の Spec を変更する場合は Spec ファイルを更新し、変更点を Issue と PR に明記してください。
-- 大きな仕様変更は新しいバージョンの Spec ファイルとして管理してください（例: `feature-x.v2.spec.md`）。
+#### 1. Constitution（憲法・プロジェクト原則）
+プロジェクトの開発規約と方針を確立します。選択した AI アシスタント内で `/speckit.constitution` コマンドを実行してください。
 
-短いチェックリスト（PR 作成前）
-- [ ] Spec ファイルが `specs/` に存在する
-- [ ] Issue が作成されている/紐付いている
-- [ ] ブランチ名が規約に従っている
-- [ ] テストが通る（または必要なテストが追加されている）
-- [ ] PR 本文に Spec へのリンクと受け入れ基準が含まれている
+例：
+```
+/speckit.constitution Python 3.11+ を使用し、uv でパッケージ管理を行う。テストは pytest を使用。コード品質は Ruff で管理。シンプルさを最優先とする。
+```
 
-自動化の推奨
-- GitHub Actions に `specify check` を組み込み、PR ごとに環境チェックを実行することを推奨します（既に `.github/workflows/specify-check.yml` を追加済み）。
+**注記**: 具体的なコマンド実行方法（IDE 内の Copilot Chat か、ターミナル駆動か）は、`specify init` で選択した AI ツールの仕様により決定されます。詳細は実装進行に伴い本ドキュメントを更新します。
 
+#### 2. Specify（要件定義）
+実装したい機能の要件（WHAT）を定義します。選択した AI アシスタント内で `/speckit.specify` コマンドを実行してください。
+
+例：
+```
+/speckit.specify ユーザーが RAG を使った AI チャットボットで質問でき、関連ドキュメントから取得した情報に基づき回答を得られる機能
+```
+
+#### 3. Plan（実装計画）
+技術的な実装方法（HOW）と設計を定義します。`/speckit.plan` コマンドを実行してください。
+
+例：
+```
+/speckit.plan バックエンド: FastAPI + ChromaDB。フロント: React。質問入力フォーム、ベクトル検索、AI 応答生成の 3ステップで実装。
+```
+
+#### 4. Tasks（タスク分割）
+実装計画をアクション可能なタスクに分割します。`/speckit.tasks` コマンドを実行してください。
+
+#### 5. Implement（実装実行）
+分割されたタスクに基づき、実装を実行します。`/speckit.implement` コマンドを実行してください。
+
+### プロジェクト独自：GitHub Issue/PR との連携（実装後に詳述）
+
+Spec Kit の公式フローに加えて、このプロジェクトでは以下の運用を推奨します（詳細は実装進行に伴い更新予定）：
+
+- **仕様の永続化**: `/specify` フェーズで生成された仕様を `specs/` フォルダに Markdown ファイルとして保存
+- **Issue トラッキング**: GitHub Issue で仕様にリンクし、進捗を追跡
+- **PR チェック**: `.github/PULL_REQUEST_TEMPLATE.md` を使用して、仕様へのリンクを必須化
+
+詳細な手順と例は実装進行に伴い充実させます。
+
+## (補足) GitHub Copilot CLI について
+
+### 概要
+`gh copilot` は GitHub CLI に組み込まれたターミナルベースの補助ツールです。このプロジェクトでは、Spec Kit の主流（AI アシスタント内での slash commands）を補完する補助的な用途として位置づけられます。
+
+### セットアップ
+
+DevContainer 内で初回利用時に Copilot CLI が自動ダウンロードされます（保存先: `/home/vscode/.local/share/gh/copilot`）。
+
+初回実行時に認証を行ってください：
+```bash
+gh auth login
+```
+
+### 基本コマンド例
+
+```bash
+# Copilot CLI の起動（対話型）
+gh copilot
+
+# 特定のプロンプトを直接送信
+gh copilot -p "Python で Hello World を出力するコードを書いて"
+
+# インストール済み CLI を削除
+gh copilot --remove
+```
+
+### 使用場面
+- 簡単なコード補助タスク
+- ドキュメント要約
+- その他の補助的な質問
+
+注記: `/speckit.*` slash commands は AI アシスタント内でのみ利用可能であり、`gh copilot` CLI 経由では直接実行できません。Spec Kit の主流ワークフローには、選択した AI アシスタント（GitHub Copilot Chat など）を使用してください。
