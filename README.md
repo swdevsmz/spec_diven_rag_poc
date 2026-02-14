@@ -78,4 +78,61 @@ VS Code 拡張機能（DevContainer内で自動インストール）
     ```
 
 ## 仕様駆動開発の実施
-TODO
+
+以下はこのリポジトリでの仕様駆動（Spec-Driven Development）を実践するための手順です。短期的なワークフロー、主要コマンド、および PR 作成時のチェックリストを含みます。
+
+1. 前提確認（DevContainer 内）
+- DevContainer 内で以下を実行してツールが利用可能か確認します:
+  - specify check
+  - gh --version
+  - gh auth login  # 必要に応じて認証を行ってください
+
+2. 仕様（Spec）の作成
+- `specs/` ディレクトリを作成し、各機能について Markdown 形式で Spec を追加します（例: `specs/feature-x.spec.md`）。
+- 各 Spec に含める項目:
+  - 目的
+  - ユーザーストーリー
+  - 受け入れ基準（Acceptance Criteria）
+  - 検証方法（対応するテストや手順）
+
+3. Issue の作成（gh）
+- Spec を書いたら対応する Issue を作成し、Spec へのリンクを含めます:
+  - gh issue create --title "Spec: feature-x" --body "See specs/feature-x.spec.md" --label spec
+
+4. ブランチ作成と実装
+- ブランチ命名例: `spec/feature-x` または `feat/spec-feature-x`
+  - git checkout -b spec/feature-x
+- 実装は Spec の受け入れ基準に従って行います。
+
+5. ローカル検証
+- 仕様に記載した検証方法に従いテスト・検証を行います。例:
+  - specify check
+  - pytest tests/test_feature_x.py
+
+6. PR 作成（必須: Spec へのリンク）
+- PR を作成する際、本文に Spec へのリンクと受け入れ基準を必ず含めてください:
+  - gh pr create --title "Implement feature-x (spec)" --body "Spec: specs/feature-x.spec.md\nAcceptance: ..." --base main
+- `.github/PULL_REQUEST_TEMPLATE.md` を利用して Spec のリンクを必須化しています。
+
+7. レビューとマージ
+- レビューでは以下を必ずチェックしてください:
+  - 仕様の各受け入れ基準が満たされていること
+  - テストが通っていること
+  - Spec へのリンクが正しいこと
+- マージ例:
+  - gh pr merge <pr-number> --merge --delete-branch
+
+8. 仕様の更新ルール
+- 既存の Spec を変更する場合は Spec ファイルを更新し、変更点を Issue と PR に明記してください。
+- 大きな仕様変更は新しいバージョンの Spec ファイルとして管理してください（例: `feature-x.v2.spec.md`）。
+
+短いチェックリスト（PR 作成前）
+- [ ] Spec ファイルが `specs/` に存在する
+- [ ] Issue が作成されている/紐付いている
+- [ ] ブランチ名が規約に従っている
+- [ ] テストが通る（または必要なテストが追加されている）
+- [ ] PR 本文に Spec へのリンクと受け入れ基準が含まれている
+
+自動化の推奨
+- GitHub Actions に `specify check` を組み込み、PR ごとに環境チェックを実行することを推奨します（既に `.github/workflows/specify-check.yml` を追加済み）。
+
