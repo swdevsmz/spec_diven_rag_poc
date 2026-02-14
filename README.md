@@ -40,6 +40,15 @@ VS Code 拡張機能（DevContainer内で自動インストール）
 ├─ Pylance（ms-python.vscode-pylance）
 ├─ Makefile Tools（ms-vscode.makefile-tools）
 └─ Ruff（charliermarsh.ruff）
+
+### GitHub Copilot CLI (`gh copilot`)
+- 説明: この DevContainer では `gh` に `copilot` コマンドが組み込まれており、初回実行時に Copilot CLI がダウンロードされます（保存先: `/home/vscode/.local/share/gh/copilot`）。
+- 認証: 事前にコンテナ内で `gh auth login` を実行してください。
+- 基本コマンド例:
+  - `gh copilot`                 # 最初のダウンロード + 実行
+  - `gh copilot --remove`        # ダウンロード済み CLI を削除
+  - `gh copilot -p "<prompt>"`  # 例: `gh copilot -p "Summarize README.md"`
+- 備考: `.devcontainer/post-create.sh` は `gh-copilot` 拡張のインストールを試みますが、`gh` が既に `copilot` コマンドを提供している場合は拡張の追加インストールは不要です。
 ```
 
 ## 環境構築
