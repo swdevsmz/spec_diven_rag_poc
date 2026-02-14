@@ -190,7 +190,7 @@ flowchart LR
 | ✅ Tasks | 実装計画をアクション可能なタスクに分割 | `/speckit.tasks` | `.specify/features/[name]/tasks.md` |
 | 🔨 Implement | 分割されたタスクに基づいて実装を実行 | `/speckit.implement` | ソースコード、テスト、PR |
 
-#### 1. Constitution（憲法・プロジェクト原則）
+#### 1. Constitution（憲法・プロジェクト原則・プロジェクトメモリ）
 プロジェクトの開発規約と方針を確立します。選択した AI アシスタント内で `/speckit.constitution` コマンドを実行してください。
 
 例：
@@ -204,7 +204,7 @@ flowchart LR
 - 制約：作成するドキュメントは日本語にすること
 ```
 
-#### 2. Specify（要件定義）
+#### 2. Specify（要件）
 実装したい機能の要件（WHAT）を定義します。選択した AI アシスタント内で `/speckit.specify` コマンドを実行してください。
 
 例：
