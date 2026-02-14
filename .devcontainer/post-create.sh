@@ -14,9 +14,17 @@ uv tool install specify-cli --from git+https://github.com/github/spec-kit.git ||
     echo "⚠️  Specify CLI installation encountered an issue, but continuing..."
 }
 
-# GitHub CLI 認証初期化（オプション）
+# GitHub CLI 認証初期化（オプション）および gh-copilot インストール
 if command -v gh &> /dev/null; then
-    echo "✅ GitHub CLI found, skipping re-auth"
+    echo "✅ GitHub CLI found"
+
+    # gh-copilot (official gh extension) をインストール（未インストール時のみ）
+    if gh extension list | grep -q 'github/gh-copilot'; then
+        echo "✅ gh-copilot extension already installed"
+    else
+        echo "🔧 Installing gh-copilot extension..."
+        gh extension install github/gh-copilot || echo "⚠️ gh-copilot install failed (run 'gh auth login' inside the container if required)"
+    fi
 else
     echo "⚠️  GitHub CLI not found in PATH"
 fi
