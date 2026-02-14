@@ -17,29 +17,30 @@
 
 ```text
 Windows 11
-└─ WSL2 (Debian)
-    ├─ Docker
-└─ DevContainer
-    ├─ Python 3.11+
-    ├─ uv（パッケージマネージャー）
-    ├─ GitHub Spec Kit (specify-cli)
-    ├─ GitHub Copilot
-    └─ Development Tools
-          ├─ git
-          ├─ github-cli
-          └─ vscode
+└─ VS Code + Dev Containers 拡張機能
+    └─ WSL2 (Debian)
+        └─ Docker
+            └─ DevContainer
+                ├─ Python 3.11+
+                ├─ uv（パッケージマネージャー）
+                ├─ GitHub Spec Kit (specify-cli)
+                ├─ GitHub Copilot
+                └─ Development Tools
+                      ├─ git
+                      ├─ github-cli (gh)
+                      └─ Node.js 24
 
-VS Code と拡張機能（ホスト側）
-├─ VS Code
-├─ Dev Containers 拡張機能
+VS Code 拡張機能（ホスト側 Windows）
+├─ Dev Containers（ms-vscode-remote.remote-containers）
 
-VS Code 拡張機能（DevContainer内で自動インストール）
+VS Code 拡張機能（DevContainer 内で自動インストール）
 ├─ GitHub Copilot（GitHub.copilot）
 ├─ GitHub Copilot Chat（GitHub.copilot-chat）
 ├─ Python（ms-python.python）
 ├─ Pylance（ms-python.vscode-pylance）
 ├─ Makefile Tools（ms-vscode.makefile-tools）
 └─ Ruff（charliermarsh.ruff）
+```
 
 ### GitHub Copilot CLI (`gh copilot`)
 - 説明: この DevContainer では `gh` に `copilot` コマンドが組み込まれており、初回実行時に Copilot CLI がダウンロードされます（保存先: `/home/vscode/.local/share/gh/copilot`）。
@@ -49,30 +50,42 @@ VS Code 拡張機能（DevContainer内で自動インストール）
   - `gh copilot --remove`        # ダウンロード済み CLI を削除
   - `gh copilot -p "<prompt>"`  # 例: `gh copilot -p "Summarize README.md"`
 - 備考: `.devcontainer/post-create.sh` は `gh-copilot` 拡張のインストールを試みますが、`gh` が既に `copilot` コマンドを提供している場合は拡張の追加インストールは不要です。
-```
 
 ## 環境構築
 
-### Step 1: WSL2（Debian）のインストール
-- Windows 11 上で WSL2 を有効化
-- Debian ディストリビューションをインストール
-  ```bash
-  wsl --install --distribution Debian
+### Step 1: VS Code と拡張機能のインストール
+- Windows 11 に VS Code をインストール
+- 以下の拡張機能をインストール：
+  - **Dev Containers**（ms-vscode-remote.remote-containers）
+
+### Step 2: リポジトリのクローン
+- Windows 上の任意のディレクトリ（例: `C:\Users\<username>\repos\`）にこのリポジトリをクローン
+  ```powershell
+  git clone https://github.com/swdevsmz/spec_diven_rag_poc.git
+  cd spec_diven_rag_poc
   ```
 
-### Step 2: VS Code と拡張機能のインストール
-- VS Code をインストール
-- 以下の拡張機能をインストール：
-  - Dev Containers（ms-vscode-remote.remote-containers）
+### Step 3: WSL2（Debian）のインストール
+- PowerShell（管理者権限）で `wsl_setup_scripts\wsl_debian_install.ps1` を実行
+  ```powershell
+  .\wsl_setup_scripts\wsl_debian_install.ps1
+  ```
+- スクリプトが Debian をインストールし、初回起動時にユーザー名とパスワードの設定を求めます。
 
-### Step 3: リポジトリのクローンと DevContainer 起動
+### Step 4: Docker のインストール（WSL 内）
+- WSL（Debian）内で `wsl_setup_scripts/wsl_docker_install.sh` を実行
+  ```bash
+  cd /mnt/c/Users/<username>/repos/spec_diven_rag_poc
+  bash wsl_setup_scripts/wsl_docker_install.sh
+  ```
+- スクリプト完了後、一度 WSL から `exit` で抜けて、PowerShell で `wsl --shutdown` を実行してください。
 
-- WSL2（Debian）上にこのリポジトリをクローン
-- VS Code でプロジェクトを開く
-- コマンドパレット（Ctrl+Shift+P）から Dev Containers: Reopen in Container を選択
-- DevContainer が起動し、post-create.sh が自動実行される
+### Step 5: DevContainer の起動
+- VS Code でリポジトリを開く
+- コマンドパレット（Ctrl+Shift+P）から **Dev Containers: Reopen in Container** を選択
+- DevContainer が起動し、`.devcontainer/post-create.sh` が自動実行されます。
 - 起動確認
-  - DevContainer内で以下を実行してセットアップを確認：
+  - DevContainer 内で以下を実行してセットアップを確認：
     ```bash
     specify check
     ```
