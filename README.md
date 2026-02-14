@@ -106,6 +106,31 @@ specify version
 
 Spec Kit では、以下の 5つのフェーズを順序に実行して開発を進めます：
 
+#### フェーズ概要（フロー図）
+
+```mermaid
+flowchart LR
+    A["🏛️ Constitution<br/>(プロジェクト原則)"] --> B["📋 Specify<br/>(要件定義)"]
+    B --> C["📐 Plan<br/>(実装計画)"]
+    C --> D["✅ Tasks<br/>(タスク分割)"]
+    D --> E["🔨 Implement<br/>(実装実行)"]
+    style A fill:#e1f5ff
+    style B fill:#f3e5f5
+    style C fill:#fff3e0
+    style D fill:#e8f5e9
+    style E fill:#fce4ec
+```
+
+#### フェーズ詳細テーブル
+
+| フェーズ | 説明 | コマンド | 主な成果物 |
+|---------|------|---------|-----------|
+| 🏛️ Constitution | プロジェクト開発規約・方針を確立 | `/speckit.constitution` | `.specify/memory/constitution.md` |
+| 📋 Specify | 実装する機能の要件（WHAT）を定義 | `/speckit.specify` | `.specify/features/[name]/spec.md` |
+| 📐 Plan | 技術スタックと設計（HOW）を定義 | `/speckit.plan` | `.specify/features/[name]/plan.md` |
+| ✅ Tasks | 実装計画をアクション可能なタスクに分割 | `/speckit.tasks` | `.specify/features/[name]/tasks.md` |
+| 🔨 Implement | 分割されたタスクに基づいて実装を実行 | `/speckit.implement` | ソースコード、テスト、PR |
+
 #### 1. Constitution（憲法・プロジェクト原則）
 プロジェクトの開発規約と方針を確立します。選択した AI アシスタント内で `/speckit.constitution` コマンドを実行してください。
 
