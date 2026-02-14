@@ -86,7 +86,7 @@ VS Code 拡張機能（DevContainer 内で自動インストール）
 
 GitHub Spec Kit を使用した仕様駆動開発（Spec-Driven Development）のワークフローを以下に示します。このフローは公式の 5つのフェーズに基づき、プロジェクト独自の GitHub Issue/PR 連携を組み合わせたものです。
 
-### Specify CLI の基本コマンド
+### Specify プロジェクト初期
 
 プロジェクト初期化と環境確認：
 
@@ -97,9 +97,6 @@ specify init spec_diven_rag_poc --ai copilot
 
 # インストール済みのツール確認
 specify check
-
-# Specify バージョン確認
-specify version
 ```
 
 ※ 各コマンド実行時に生成・更新される主なファイル／ディレクトリ（実行例に基づく具体例）:
