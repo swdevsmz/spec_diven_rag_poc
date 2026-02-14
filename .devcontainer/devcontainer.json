@@ -1,0 +1,31 @@
+{
+    "name": "SDD-Spec-Kit-Env",
+    "image": "mcr.microsoft.com/devcontainers/python:3.11-bullseye",
+    "runArgs": [
+        "--userns=keep-id"
+    ],
+    "features": {
+        "ghcr.io/devcontainers/features/git:1": {},
+        "ghcr.io/devcontainers/features/github-cli:1": {}
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "GitHub.copilot",
+                "GitHub.copilot-chat",
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "ms-vscode.makefile-tools",
+                "charliermarsh.ruff"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "python.linting.enabled": true,
+                "editor.formatOnSave": true,
+                "editor.defaultFormatter": "ms-python.python"
+            }
+        }
+    },
+    "postCreateCommand": "bash .devcontainer/post-create.sh",
+    "remoteUser": "vscode"
+}
