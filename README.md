@@ -58,30 +58,33 @@ VS Code 拡張機能（DevContainer 内で自動インストール）
 - 以下の拡張機能をインストール：
   - **Dev Containers**（ms-vscode-remote.remote-containers）
 
-### Step 2: リポジトリのクローン
-- Windows 上の任意のディレクトリ（例: `C:\Users\<username>\repos\`）にこのリポジトリをクローン
+### Step 2: WSL2（Debian）のインストール
+- `wsl_setup_scripts/wsl_debian_install.ps1` をローカル PC にダウンロード
+- PowerShell（管理者権限）でスクリプトを実行
   ```powershell
+  .\wsl_debian_install.ps1
+  ```
+- スクリプトが Debian をインストールし、初回起動時にユーザー名とパスワードの設定を求めます。
+
+### Step 3: リポジトリのクローン（WSL 内）
+- WSL（Debian）内でこのリポジトリをクローン
+  ```bash
+  cd ~
   git clone https://github.com/swdevsmz/spec_diven_rag_poc.git
   cd spec_diven_rag_poc
   ```
 
-### Step 3: WSL2（Debian）のインストール
-- PowerShell（管理者権限）で `wsl_setup_scripts\wsl_debian_install.ps1` を実行
-  ```powershell
-  .\wsl_setup_scripts\wsl_debian_install.ps1
-  ```
-- スクリプトが Debian をインストールし、初回起動時にユーザー名とパスワードの設定を求めます。
-
 ### Step 4: Docker のインストール（WSL 内）
-- WSL（Debian）内で `wsl_setup_scripts/wsl_docker_install.sh` を実行
+- WSL（Debian）内で `wsl_docker_install.sh` を実行
   ```bash
-  cd /mnt/c/Users/<username>/repos/spec_diven_rag_poc
   bash wsl_setup_scripts/wsl_docker_install.sh
   ```
 - スクリプト完了後、一度 WSL から `exit` で抜けて、PowerShell で `wsl --shutdown` を実行してください。
 
 ### Step 5: DevContainer の起動
-- VS Code でリポジトリを開く
+- VS Code で WSL 内のリポジトリを開く
+  - VS Code のコマンドパレット（Ctrl+Shift+P）から **WSL: Connect to WSL** を選択
+  - WSL 接続後、`~/spec_diven_rag_poc` フォルダを開く
 - コマンドパレット（Ctrl+Shift+P）から **Dev Containers: Reopen in Container** を選択
 - DevContainer が起動し、`.devcontainer/post-create.sh` が自動実行されます。
 - 起動確認
