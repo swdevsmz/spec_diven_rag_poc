@@ -2,21 +2,23 @@
 
 ## 概要
 
-仕様駆動開発（Specification-Driven Development）と GitHub Copilot を活用した RAG（Retrieval-Augmented Generation）の PoC プロジェクト。
+- 仕様駆動開発（Specification-Driven Development）と GitHub Copilot を活用した RAG（Retrieval-Augmented Generation）を活用したAIチャットボットの PoC プロジェクト。
+- 仕様駆動開発とRAGを学ぶにあたりRAGを活用したAIチャットボットの構築をPoCで行います。
+- RAGにはベクターDBのChromaDBを使います。単純にノウハウをテキストデータでAIにInputするのとベクターDBを利用する場合との違いを明確化します。
 
 ## 特徴
 
 - **仕様駆動**: 曖昧さを排除し、AI による無駄なアウトプットを削減
 - **GitHub Spec Kit**: 仕様から実装までの段階的な流れをサポート
 - **GitHub Copilot 統合**: スラッシュコマンドによる構造化ワークフロー
-- **DevContainer**: Windows + Podman + WSL2 でチーム全体が同じ環境を共有
+- **DevContainer**: Windows + Docker + WSL2 でチーム全体が同じ環境を共有
 
 ## 環境構成
 
 ```text
 Windows 11
-├─ Podman Desktop
 └─ WSL2 (Debian)
+    ├─ Docker
 └─ DevContainer
     ├─ Python 3.11+
     ├─ uv（パッケージマネージャー）
@@ -30,7 +32,6 @@ Windows 11
 VS Code と拡張機能（ホスト側）
 ├─ VS Code
 ├─ Dev Containers 拡張機能
-└─ Podman Desktop
 
 VS Code 拡張機能（DevContainer内で自動インストール）
 ├─ GitHub Copilot（GitHub.copilot）

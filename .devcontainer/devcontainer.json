@@ -1,9 +1,7 @@
 {
     "name": "SDD-Spec-Kit-Env",
     "image": "mcr.microsoft.com/devcontainers/python:3.11-bullseye",
-    "runArgs": [
-        "--userns=keep-id"
-    ],
+    "runArgs": [],
     "features": {
         "ghcr.io/devcontainers/features/git:1": {},
         "ghcr.io/devcontainers/features/github-cli:1": {}
