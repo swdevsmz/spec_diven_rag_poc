@@ -30,6 +30,13 @@ else
 fi
 
 # Specify CLI 確認
+# Node / npm 確認
+if command -v node &> /dev/null; then
+  echo "✅ node $(node -v) / npm $(npm -v)"
+else
+  echo "⚠️ node / npm not found (DevContainer の再ビルドが必要です)"
+fi
+
 echo "✅ Environment setup complete!"
 if command -v specify &> /dev/null; then
     echo "📋 Spec Kit version:"
