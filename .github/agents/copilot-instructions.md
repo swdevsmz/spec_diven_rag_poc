@@ -3,6 +3,8 @@
 Auto-generated from all feature plans. Last updated: 2026-02-14
 
 ## Active Technologies
+- Python 3.11+ + FastAPI, ChromaDB, GitHub Models SDK, uvicorn, pydantic (001-rag-chat)
+- ChromaDB (ベクトルストレージ)、ファイルシステム（ドキュメント保存、実験ログ保存） (001-rag-chat)
 
 - Python 3.11+ (001-rag-chat)
 
@@ -22,6 +24,7 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.11+: Follow standard conventions
 
 ## Recent Changes
+- 001-rag-chat: Added Python 3.11+ + FastAPI, ChromaDB, GitHub Models SDK, uvicorn, pydantic
 
 - 001-rag-chat: Added Python 3.11+
 

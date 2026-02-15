@@ -13,9 +13,10 @@
 ### 構成要素
 - **バックエンド**: FastAPI（Python）
 - **ベクトルDB**: ChromaDB
-- **埋め込みモデル**: OpenAI text-embedding-3-small (1536次元)
-- **生成モデル**: OpenAI GPT-4 / GPT-3.5-turbo
+- **埋め込みモデル**: GitHub Models text-embedding-3-small (1536次元)
+- **生成モデル**: GitHub Models GPT-4o
 - **フロントエンド**: React（将来実装）
+- **認証**: GitHub Token（GitHub Copilot Pro 契約で利用可能）
 
 ---
 
@@ -34,21 +35,23 @@ cd spec_diven_rag_poc
 
 ```bash
 # .env ファイル
-OPENAI_API_KEY=sk-your-api-key-here
+GITHUB_TOKEN=ghp_your_github_token_here
 
 # ChromaDB 設定（ローカル実行時はデフォルト値で OK）
 CHROMA_HOST=localhost
 CHROMA_PORT=8001
 
 # 生成モデル設定
-GENERATION_MODEL=gpt-4
+GENERATION_MODEL=gpt-4o
 EMBEDDING_MODEL=text-embedding-3-small
 
 # ログ設定
 LOG_LEVEL=INFO
 ```
 
-**⚠️ 重要**: `.env` ファイルは `.gitignore` に含まれています。絶対にリポジトリにコミットしないでください。
+**⚠️ 重要**: 
+- `.env` ファイルは `.gitignore` に含まれています。絶対にリポジトリにコミットしないでください。
+- GitHub Token は GitHub Settings > Developer settings > Personal access tokens から生成できます（GitHub Copilot Pro 契約があれば GitHub Models にアクセス可能）
 
 ### Step 3: 依存関係のインストール
 
@@ -365,14 +368,18 @@ docker logs chromadb
 docker restart chromadb
 ```
 
-### OpenAI API エラー
+### GitHub Token エラー
 
 ```bash
-# API キーが正しく設定されているか確認
-echo $OPENAI_API_KEY
+# GitHub Token が正しく設定されているか確認
+echo $GITHUB_TOKEN
 
 # .env ファイルを再読み込み
 source .env
+
+# GitHub Models へのアクセス確認
+curl -H "Authorization: Bearer $GITHUB_TOKEN" \
+  https://models.inference.ai.azure.com/models
 ```
 
 ### ベクトル化が失敗する
