@@ -1,3 +1,8 @@
+---
+name: speckit-main
+description: 仕様駆動開発（Spec-Driven Development）を支えるメイン指示書
+---
+
 # spec_diven_rag_poc Development Guidelines
 
 Auto-generated from all feature plans. Last updated: 2026-02-14
