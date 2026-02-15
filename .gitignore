@@ -39,5 +39,9 @@ env/
 .env
 .env.local
 
+# Project data
+data/
+experiments/*.jsonl
+
 # Spec Kit cache
 .speckit/.cache/

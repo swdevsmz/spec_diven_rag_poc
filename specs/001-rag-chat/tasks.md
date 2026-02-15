@@ -75,14 +75,14 @@ graph TD
 
 **Tasks**:
 
-- [ ] T001 backend/ ディレクトリと基本構造を作成（plan.md の Project Structure に従う）
-- [ ] T002 backend/requirements.txt を作成（fastapi, uvicorn, pydantic, pydantic-settings, httpx, chromadb, pytest, pytest-asyncio）
-- [ ] T003 backend/README.md を作成（セットアップ手順と実行方法を記載）
-- [ ] T004 .gitignore を更新（.env, __pycache__, *.pyc, data/, experiments/*.jsonl を追加）
-- [ ] T005 docker-compose.yml を作成（ChromaDB サービス定義）
-- [ ] T006 data/documents/, data/chromadb/, data/evaluation/ ディレクトリを作成
-- [ ] T007 experiments/ ディレクトリと experiments/README.md を作成（再現手順テンプレート）
-- [ ] T008 .env.example を作成（GITHUB_TOKEN, CHROMA_HOST, CHROMA_PORT, GENERATION_MODEL, EMBEDDING_MODEL のテンプレート）
+- [X] T001 backend/ ディレクトリと基本構造を作成（plan.md の Project Structure に従う）
+- [X] T002 backend/requirements.txt を作成（fastapi, uvicorn, pydantic, pydantic-settings, httpx, chromadb, pytest, pytest-asyncio）
+- [X] T003 backend/README.md を作成（セットアップ手順と実行方法を記載）
+- [X] T004 .gitignore を更新（.env, __pycache__, *.pyc, data/, experiments/*.jsonl を追加）
+- [X] T005 docker-compose.yml を作成（ChromaDB サービス定義）
+- [X] T006 data/documents/, data/chromadb/, data/evaluation/ ディレクトリを作成
+- [X] T007 experiments/ ディレクトリと experiments/README.md を作成（再現手順テンプレート）
+- [X] T008 .env.example を作成（GITHUB_TOKEN, CHROMA_HOST, CHROMA_PORT, GENERATION_MODEL, EMBEDDING_MODEL のテンプレート）
 
 **Completion Criteria**:
 - ディレクトリ構造が plan.md と一致
@@ -97,17 +97,17 @@ graph TD
 
 **Tasks**:
 
-- [ ] T009 [P] backend/app/__init__.py を作成（空ファイル）
-- [ ] T010 [P] backend/app/config.py を実装（pydantic-settings で環境変数管理: GITHUB_TOKEN, CHROMA_HOST, CHROMA_PORT, GENERATION_MODEL, EMBEDDING_MODEL, LOG_LEVEL）
-- [ ] T011 backend/app/main.py を実装（FastAPI アプリ初期化、CORS設定、ルーター登録、起動時の環境変数検証）
-- [ ] T012 [P] backend/app/models/__init__.py を作成（空ファイル）
-- [ ] T013 [P] backend/app/services/__init__.py を作成（空ファイル）
-- [ ] T014 [P] backend/app/api/__init__.py を作成（空ファイル）
-- [ ] T015 [P] backend/app/utils/__init__.py を作成（空ファイル）
-- [ ] T016 [P] backend/app/services/embedding.py を実装（GitHub Models embedding API クライアント: get_embedding(text) → list[float]）
-- [ ] T017 [P] backend/app/services/generation.py を実装（GitHub Models chat completions API クライアント: generate_answer(question, context) → str）
-- [ ] T018 backend/app/services/vectordb.py を実装（ChromaDB クライアント初期化、コレクション管理）
-- [ ] T019 [P] backend/app/utils/file_handlers.py を実装（テキストファイル読み込み、チャンク分割: chunk_text(text, chunk_size=500, overlap=50) → list[str]）
+- [X] T009 [P] backend/app/__init__.py を作成（空ファイル）
+- [X] T010 [P] backend/app/config.py を実装（pydantic-settings で環境変数管理: GITHUB_TOKEN, CHROMA_HOST, CHROMA_PORT, GENERATION_MODEL, EMBEDDING_MODEL, LOG_LEVEL）
+- [X] T011 backend/app/main.py を実装（FastAPI アプリ初期化、CORS設定、ルーター登録、起動時の環境変数検証）
+- [X] T012 [P] backend/app/models/__init__.py を作成（空ファイル）
+- [X] T013 [P] backend/app/services/__init__.py を作成（空ファイル）
+- [X] T014 [P] backend/app/api/__init__.py を作成（空ファイル）
+- [X] T015 [P] backend/app/utils/__init__.py を作成（空ファイル）
+- [X] T016 [P] backend/app/services/embedding.py を実装（GitHub Models embedding API クライアント: get_embedding(text) → list[float]）
+- [X] T017 [P] backend/app/services/generation.py を実装（GitHub Models chat completions API クライアント: generate_answer(question, context) → str）
+- [X] T018 backend/app/services/vectordb.py を実装（ChromaDB クライアント初期化、コレクション管理）
+- [X] T019 [P] backend/app/utils/file_handlers.py を実装（テキストファイル読み込み、チャンク分割: chunk_text(text, chunk_size=500, overlap=50) → list[str]）
 
 **Completion Criteria**:
 - FastAPI アプリが起動可能（GITHUB_TOKEN 未設定時にエラー表示）
@@ -133,22 +133,22 @@ graph TD
 
 ### Models (US1)
 
-- [ ] T020 [P] [US1] backend/app/models/query.py を実装（QueryRequest, QueryResponse Pydantic モデル定義）
-- [ ] T021 [P] [US1] backend/app/models/document.py を実装（DocumentChunk Pydantic モデル定義: chunk_id, document_id, content, embedding）
+- [X] T020 [P] [US1] backend/app/models/query.py を実装（QueryRequest, QueryResponse Pydantic モデル定義）
+- [X] T021 [P] [US1] backend/app/models/document.py を実装（DocumentChunk Pydantic モデル定義: chunk_id, document_id, content, embedding）
 
 ### Services (US1)
 
-- [ ] T022 [US1] backend/app/services/vectordb.py に query_similar_chunks(query_embedding, top_k=5) メソッドを追加
-- [ ] T023 [US1] backend/app/services/generation.py に build_rag_prompt(question, chunks) ヘルパー関数を追加
+- [X] T022 [US1] backend/app/services/vectordb.py に query_similar_chunks(query_embedding, top_k=5) メソッドを追加
+- [X] T023 [US1] backend/app/services/generation.py に build_rag_prompt(question, chunks) ヘルパー関数を追加
 
 ### API Endpoints (US1)
 
-- [ ] T024 [US1] backend/app/api/queries.py を実装（POST /api/v1/query エンドポイント: RAGモードで質問応答）
+- [X] T024 [US1] backend/app/api/queries.py を実装（POST /api/v1/query エンドポイント: RAGモードで質問応答）
 
 ### Integration (US1)
 
-- [ ] T025 [US1] backend/app/main.py に queries ルーターを登録
-- [ ] T026 [US1] テストデータ準備スクリプト scripts/prepare_test_data.py を作成（サンプルドキュメントをChromaDBに登録）
+- [X] T025 [US1] backend/app/main.py に queries ルーターを登録
+- [X] T026 [US1] テストデータ準備スクリプト scripts/prepare_test_data.py を作成（サンプルドキュメントをChromaDBに登録）
 - [ ] T027 [US1] 手動テスト実施: curl または Swagger UI で質問応答をテスト
 
 **Parallel Execution Example (US1)**:
