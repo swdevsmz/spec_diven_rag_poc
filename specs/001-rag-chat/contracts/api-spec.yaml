@@ -1,0 +1,573 @@
+openapi: 3.0.3
+info:
+  title: RAGチャットボット API
+  description: |
+    日本語ドキュメントに基づく質問応答システムの REST API 仕様。
+    ドキュメントの登録、ベクトル検索、AI応答生成をサポート。
+  version: 1.0.0
+  contact:
+    name: RAG PoC Team
+
+servers:
+  - url: http://localhost:8000/api/v1
+    description: ローカル開発環境
+
+tags:
+  - name: documents
+    description: ドキュメント管理
+  - name: query
+    description: 質問応答
+  - name: experiments
+    description: 実験記録と評価
+
+paths:
+  /documents:
+    post:
+      tags:
+        - documents
+      summary: ドキュメントのアップロード
+      description: |
+        日本語ドキュメントをシステムに登録します。
+        サポートされる形式: txt, pdf, md
+      operationId: uploadDocument
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: ドキュメントファイル
+                metadata:
+                  type: object
+                  description: 追加メタデータ (JSON)
+                  properties:
+                    author:
+                      type: string
+                    category:
+                      type: string
+              required:
+                - file
+      responses:
+        '201':
+          description: ドキュメント登録成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponse'
+        '400':
+          description: 不正なリクエスト（サポートされていないファイル形式等）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      tags:
+        - documents
+      summary: ドキュメント一覧取得
+      description: 登録されている全ドキュメントの一覧を取得
+      operationId: listDocuments
+      parameters:
+        - name: status
+          in: query
+          description: ステータスでフィルタ
+          schema:
+            type: string
+            enum: [pending, processed, error]
+        - name: limit
+          in: query
+          description: 取得件数
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          description: オフセット
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: ドキュメント一覧
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  documents:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DocumentResponse'
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+
+  /documents/{document_id}/vectorize:
+    post:
+      tags:
+        - documents
+      summary: ドキュメントのベクトル化
+      description: |
+        指定されたドキュメントをチャンクに分割し、埋め込みベクトルを生成してChromaDBに格納します。
+      operationId: vectorizeDocument
+      parameters:
+        - name: document_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chunk_size:
+                  type: integer
+                  description: チャンクサイズ（文字数）
+                  default: 500
+                chunk_overlap:
+                  type: integer
+                  description: チャンク間のオーバーラップ（文字数）
+                  default: 50
+      responses:
+        '200':
+          description: ベクトル化成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  document_id:
+                    type: string
+                    format: uuid
+                  chunks_created:
+                    type: integer
+                  status:
+                    type: string
+                    enum: [processed]
+                  embedding_model:
+                    type: string
+                    example: "text-embedding-3-small"
+                  embedding_dimension:
+                    type: integer
+                    example: 1536
+        '404':
+          description: ドキュメントが見つからない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: ベクトル化エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /query:
+    post:
+      tags:
+        - query
+      summary: 質問応答（RAGモード）
+      description: |
+        ユーザーの質問に対して、ベクトル検索と生成AIを使用して回答を生成します。
+      operationId: queryRag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                question:
+                  type: string
+                  description: 質問文（日本語）
+                  example: "FastAPIの基本的な使い方を教えてください"
+                top_k:
+                  type: integer
+                  description: 取得する関連ドキュメント数
+                  default: 5
+                  minimum: 1
+                  maximum: 20
+                temperature:
+                  type: number
+                  format: float
+                  description: 生成モデルの温度パラメータ
+                  default: 0.7
+                  minimum: 0.0
+                  maximum: 2.0
+                max_tokens:
+                  type: integer
+                  description: 生成する最大トークン数
+                  default: 500
+              required:
+                - question
+      responses:
+        '200':
+          description: 回答生成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryResponse'
+        '400':
+          description: 不正なリクエスト
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /query/compare:
+    post:
+      tags:
+        - query
+      summary: RAG vs Non-RAG 比較
+      description: |
+        同じ質問に対してRAGモードとNon-RAGモードの両方で回答を生成し、比較可能な形式で返します。
+      operationId: queryCompare
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                question:
+                  type: string
+                  description: 質問文（日本語）
+                top_k:
+                  type: integer
+                  description: RAGモードで取得する関連ドキュメント数
+                  default: 5
+                temperature:
+                  type: number
+                  format: float
+                  default: 0.7
+                max_tokens:
+                  type: integer
+                  default: 500
+              required:
+                - question
+      responses:
+        '200':
+          description: 比較結果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  question:
+                    type: string
+                  rag_response:
+                    $ref: '#/components/schemas/QueryResponse'
+                  non_rag_response:
+                    type: object
+                    properties:
+                      answer:
+                        type: string
+                      model:
+                        type: string
+                      parameters:
+                        $ref: '#/components/schemas/GenerationParameters'
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /experiments:
+    get:
+      tags:
+        - experiments
+      summary: 実験ログ一覧取得
+      description: |
+        過去の質問応答実験のログを取得します。
+      operationId: listExperiments
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: mode
+          in: query
+          description: RAG/Non-RAGでフィルタ
+          schema:
+            type: string
+            enum: [rag, non_rag]
+      responses:
+        '200':
+          description: 実験ログ一覧
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  experiments:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ExperimentLog'
+                  total:
+                    type: integer
+
+  /evaluation:
+    post:
+      tags:
+        - experiments
+      summary: 評価の実行
+      description: |
+        評価用の質問セット（10問）を使用してシステムを評価し、
+        正答率とファクト一致率を計算します。
+      operationId: runEvaluation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                evaluation_set_id:
+                  type: string
+                  description: 評価セットID（省略時はデフォルトセットを使用）
+                mode:
+                  type: string
+                  enum: [rag, non_rag, both]
+                  default: both
+                  description: 評価モード
+      responses:
+        '200':
+          description: 評価結果
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvaluationResult'
+
+  /health:
+    get:
+      summary: ヘルスチェック
+      description: APIとデータベースの接続状態を確認
+      operationId: healthCheck
+      responses:
+        '200':
+          description: 正常
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "healthy"
+                  chromadb:
+                    type: string
+                    enum: [connected, disconnected]
+                  openai_api:
+                    type: string
+                    enum: [configured, not_configured]
+
+components:
+  schemas:
+    DocumentResponse:
+      type: object
+      properties:
+        document_id:
+          type: string
+          format: uuid
+        filename:
+          type: string
+        file_type:
+          type: string
+          enum: [txt, pdf, md]
+        status:
+          type: string
+          enum: [pending, processed, error]
+        created_at:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+          additionalProperties: true
+
+    QueryResponse:
+      type: object
+      properties:
+        query_id:
+          type: string
+          format: uuid
+        question:
+          type: string
+        answer:
+          type: string
+        retrieved_chunks:
+          type: array
+          items:
+            $ref: '#/components/schemas/RetrievedChunk'
+        model:
+          type: string
+          example: "gpt-4"
+        parameters:
+          $ref: '#/components/schemas/GenerationParameters'
+        timestamp:
+          type: string
+          format: date-time
+
+    RetrievedChunk:
+      type: object
+      properties:
+        chunk_id:
+          type: string
+          format: uuid
+        document_id:
+          type: string
+          format: uuid
+        content:
+          type: string
+        similarity_score:
+          type: number
+          format: float
+          description: コサイン類似度スコア（0-1）
+        metadata:
+          type: object
+
+    GenerationParameters:
+      type: object
+      properties:
+        temperature:
+          type: number
+          format: float
+        max_tokens:
+          type: integer
+        top_k:
+          type: integer
+          description: 取得したドキュメント数
+
+    ExperimentLog:
+      type: object
+      properties:
+        log_id:
+          type: string
+          format: uuid
+        query_id:
+          type: string
+          format: uuid
+        question:
+          type: string
+        answer:
+          type: string
+        mode:
+          type: string
+          enum: [rag, non_rag]
+        retrieved_chunk_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        model:
+          type: string
+        parameters:
+          $ref: '#/components/schemas/GenerationParameters'
+        timestamp:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+
+    EvaluationResult:
+      type: object
+      properties:
+        evaluation_id:
+          type: string
+          format: uuid
+        evaluation_set_id:
+          type: string
+        mode:
+          type: string
+          enum: [rag, non_rag, both]
+        results:
+          type: object
+          properties:
+            rag:
+              $ref: '#/components/schemas/ModeEvaluationResult'
+            non_rag:
+              $ref: '#/components/schemas/ModeEvaluationResult'
+        timestamp:
+          type: string
+          format: date-time
+
+    ModeEvaluationResult:
+      type: object
+      properties:
+        accuracy:
+          type: number
+          format: float
+          description: 正答率（0-1）
+        fact_match_rate:
+          type: number
+          format: float
+          description: ファクト一致率（0-1）
+        average_response_time:
+          type: number
+          format: float
+          description: 平均応答時間（秒）
+        question_results:
+          type: array
+          items:
+            type: object
+            properties:
+              question:
+                type: string
+              expected_answer:
+                type: string
+              actual_answer:
+                type: string
+              is_correct:
+                type: boolean
+              fact_match_score:
+                type: number
+                format: float
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: エラーメッセージ
+        detail:
+          type: string
+          description: 詳細情報
+        timestamp:
+          type: string
+          format: date-time
+      required:
+        - error
+
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: X-API-Key
+      in: header
+      description: API キー（将来の拡張用）
