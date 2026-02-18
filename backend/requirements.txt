@@ -6,3 +6,4 @@ httpx
 chromadb
 pytest
 pytest-asyncio
+python-multipart

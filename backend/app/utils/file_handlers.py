@@ -7,6 +7,13 @@ def read_text_file(file_path: str) -> str:
     return Path(file_path).read_text(encoding="utf-8")
 
 
+def extract_text_from_file(file_path: str, file_type: str) -> str:
+    if file_type == "txt":
+        return read_text_file(file_path)
+
+    raise ValueError(f"未対応のファイル形式です: {file_type}")
+
+
 def chunk_text(text: str, chunk_size: int = 500, overlap: int = 50) -> list[str]:
     if chunk_size <= 0:
         raise ValueError("chunk_size は正の整数である必要があります。")

@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from collections import defaultdict
+from uuid import uuid4
+
 import chromadb
 
 from ..config import get_settings
@@ -46,6 +49,56 @@ class VectorDBService:
             )
 
         return items
+
+    def add_document_chunks(
+        self,
+        document_id: str,
+        chunks: list[str],
+        embeddings: list[list[float]],
+    ) -> list[str]:
+        if len(chunks) != len(embeddings):
+            raise ValueError("chunks と embeddings の件数が一致しません。")
+        if not chunks:
+            return []
+
+        collection = self.get_collection()
+        chunk_ids = [str(uuid4()) for _ in chunks]
+        metadatas = [
+            {
+                "document_id": document_id,
+                "chunk_index": index,
+            }
+            for index in range(len(chunks))
+        ]
+
+        collection.add(
+            ids=chunk_ids,
+            documents=chunks,
+            embeddings=embeddings,
+            metadatas=metadatas,
+        )
+
+        return chunk_ids
+
+    def list_documents(self) -> list[dict]:
+        collection = self.get_collection()
+        results = collection.get(include=["metadatas"])
+        metadatas = results.get("metadatas", [])
+
+        grouped: dict[str, dict] = defaultdict(
+            lambda: {"document_id": "", "chunk_count": 0})
+        for metadata in metadatas:
+            if not metadata:
+                continue
+            document_id = metadata.get("document_id")
+            if not document_id:
+                continue
+
+            if not grouped[document_id]["document_id"]:
+                grouped[document_id]["document_id"] = document_id
+            grouped[document_id]["chunk_count"] += 1
+
+        return list(grouped.values())
 
 
 def get_vectordb_service() -> VectorDBService:

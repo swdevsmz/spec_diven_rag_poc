@@ -31,13 +31,21 @@ env/
 # IDE
 .vscode/settings.json
 .vs/
+.idea/
 *.swp
 *.swo
 *~
 
+# OS
+.DS_Store
+Thumbs.db
+*.tmp
+
 # Environment variables
 .env
 .env.local
+.env.*
+*.log
 
 # Project data
 data/

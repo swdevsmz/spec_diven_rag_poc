@@ -177,23 +177,23 @@ graph TD
 
 ### Models (US2)
 
-- [ ] T028 [P] [US2] backend/app/models/document.py に Document Pydantic モデルを追加（document_id, filename, file_type, status, created_at, original_text）
+- [X] T028 [P] [US2] backend/app/models/document.py に Document Pydantic モデルを追加（document_id, filename, file_type, status, created_at, original_text）
 
 ### Services (US2)
 
-- [ ] T029 [P] [US2] backend/app/utils/file_handlers.py に extract_text_from_file(file_path, file_type) 関数を追加（txt対応、将来的にpdf/md拡張）
-- [ ] T030 [US2] backend/app/services/vectordb.py に add_document_chunks(document_id, chunks, embeddings) メソッドを追加
-- [ ] T031 [US2] backend/app/services/vectordb.py に list_documents() メソッドを追加
+- [X] T029 [P] [US2] backend/app/utils/file_handlers.py に extract_text_from_file(file_path, file_type) 関数を追加（txt対応、将来的にpdf/md拡張）
+- [X] T030 [US2] backend/app/services/vectordb.py に add_document_chunks(document_id, chunks, embeddings) メソッドを追加
+- [X] T031 [US2] backend/app/services/vectordb.py に list_documents() メソッドを追加
 
 ### API Endpoints (US2)
 
-- [ ] T032 [US2] backend/app/api/documents.py を実装（POST /api/v1/documents: ドキュメントアップロード → data/documents/ に保存）
-- [ ] T033 [US2] backend/app/api/documents.py に POST /api/v1/documents/{document_id}/vectorize エンドポイントを追加（チャンク分割 → 埋め込み生成 → ChromaDB保存）
-- [ ] T034 [US2] backend/app/api/documents.py に GET /api/v1/documents エンドポイントを追加（ドキュメント一覧取得）
+- [X] T032 [US2] backend/app/api/documents.py を実装（POST /api/v1/documents: ドキュメントアップロード → data/documents/ に保存）
+- [X] T033 [US2] backend/app/api/documents.py に POST /api/v1/documents/{document_id}/vectorize エンドポイントを追加（チャンク分割 → 埋め込み生成 → ChromaDB保存）
+- [X] T034 [US2] backend/app/api/documents.py に GET /api/v1/documents エンドポイントを追加（ドキュメント一覧取得）
 
 ### Integration (US2)
 
-- [ ] T035 [US2] backend/app/main.py に documents ルーターを登録
+- [X] T035 [US2] backend/app/main.py に documents ルーターを登録
 - [ ] T036 [US2] 手動テスト実施: ドキュメントアップロード → ベクトル化 → 質問応答のエンドツーエンドテスト
 
 **Parallel Execution Example (US2)**:

@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import get_settings
-from .api import queries
+from .api import documents, queries
 
 
 def create_app() -> FastAPI:
@@ -29,6 +29,7 @@ def create_app() -> FastAPI:
         logging.basicConfig(level=settings.log_level)
 
     app.include_router(queries.router)
+    app.include_router(documents.router)
 
     return app
 
