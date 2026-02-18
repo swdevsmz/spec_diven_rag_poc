@@ -16,16 +16,16 @@ class Settings(BaseSettings):
     chroma_persist_directory: str = "data/chromadb"
 
     # 使用モデル
-    generation_model: str = "gemini-2.0-flash"
+    generation_model: str = "gemini-2.5-flash"
     embedding_model: str = "gemini-embedding-001"
 
     # アプリログ設定
     log_level: str = "INFO"
 
-    # ルートの .env を読み込む
+    # backend ディレクトリ配下の .env を読み込む
     model_config = SettingsConfigDict(
         env_prefix="",
-        env_file=Path(__file__).resolve().parents[2] / ".env",
+        env_file=Path(__file__).resolve().parents[1] / ".env",
         extra="ignore",
     )
 

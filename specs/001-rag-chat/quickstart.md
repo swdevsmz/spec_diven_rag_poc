@@ -60,7 +60,7 @@ LOG_LEVEL=INFO
 ```bash
 # DevContainer 内で実行する場合は uv が既にインストール済み
 # 仮想環境は作成せず、システム環境に依存関係をインストール
-uv pip install --system -r requirements.txt
+sudo env "PATH=$PATH" uv pip install --system --break-system-packages -r requirements.txt
 ```
 
 #### 必要なパッケージ（requirements.txt）

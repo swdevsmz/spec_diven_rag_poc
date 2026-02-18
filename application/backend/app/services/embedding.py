@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import httpx
-from urllib.parse import urlencode
 
 from ..config import get_settings
 
@@ -13,7 +12,6 @@ async def get_embedding(text: str, task_type: str | None = None) -> list[float]:
     # 設定からモデル名とAPIキーを取得
     settings = get_settings()
     endpoint = f"{GEMINI_BASE_ENDPOINT}/{settings.embedding_model}:embedContent"
-    query = urlencode({"key": settings.gemini_api_key})
 
     # Gemini embedContent の入力フォーマット
     payload: dict = {
@@ -24,13 +22,22 @@ async def get_embedding(text: str, task_type: str | None = None) -> list[float]:
         payload["taskType"] = task_type
 
     async with httpx.AsyncClient(timeout=30.0) as client:
-        # REST API で埋め込みを取得
-        response = await client.post(
-            f"{endpoint}?{query}",
-            headers={"Content-Type": "application/json"},
-            json=payload,
-        )
-        response.raise_for_status()
+        headers = {
+            "Content-Type": "application/json",
+            "x-goog-api-key": settings.gemini_api_key,
+        }
+        response = await client.post(endpoint, headers=headers, json=payload)
+
+        # taskType 非対応モデル向けフォールバック
+        if response.status_code == 400 and task_type:
+            fallback_payload = {
+                "content": {"parts": [{"text": text}]},
+            }
+            response = await client.post(endpoint, headers=headers, json=fallback_payload)
+
+        if response.status_code >= 400:
+            raise RuntimeError(f"Embedding API error: status={response.status_code}, body={response.text}")
+
         data = response.json()
 
     # 返却形式: {"embedding": {"values": [...]}}

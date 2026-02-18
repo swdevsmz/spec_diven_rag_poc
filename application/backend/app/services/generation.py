@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import httpx
-from urllib.parse import urlencode
 
 from ..config import get_settings
 
@@ -32,7 +31,6 @@ async def generate_answer(
     settings = get_settings()
     prompt = build_rag_prompt(question, context_chunks)
     endpoint = f"{GEMINI_BASE_ENDPOINT}/{settings.generation_model}:generateContent"
-    query = urlencode({"key": settings.gemini_api_key})
 
     # Gemini generateContent の入力形式
     payload = {
@@ -46,8 +44,11 @@ async def generate_answer(
     async with httpx.AsyncClient(timeout=60.0) as client:
         # REST API で回答生成
         response = await client.post(
-            f"{endpoint}?{query}",
-            headers={"Content-Type": "application/json"},
+            endpoint,
+            headers={
+                "Content-Type": "application/json",
+                "x-goog-api-key": settings.gemini_api_key,
+            },
             json=payload,
         )
         response.raise_for_status()

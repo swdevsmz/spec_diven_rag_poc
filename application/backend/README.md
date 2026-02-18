@@ -4,19 +4,19 @@
 
 ```bash
 cd application/backend
-uv pip install --system -r requirements.txt
+sudo env "PATH=$PATH" uv pip install --system --break-system-packages -r requirements.txt
 ```
 
 ## 環境変数
 
-`application/.env` に以下を設定します。
+`application/backend/.env` に以下を設定します。
 
 ```bash
 GEMINI_API_KEY=your_gemini_api_key
 CHROMA_HOST=localhost
 CHROMA_PORT=8001
 CHROMA_PERSIST_DIRECTORY=data/chromadb
-GENERATION_MODEL=gemini-2.0-flash
+GENERATION_MODEL=gemini-2.5-flash
 EMBEDDING_MODEL=gemini-embedding-001
 LOG_LEVEL=INFO
 ```
@@ -35,6 +35,35 @@ uv run --with-requirements requirements.txt uvicorn app.main:app --reload --host
 
 ```bash
 uv run --with-requirements application/backend/requirements.txt python application/backend/data_setup/prepare_test_data.py
+```
+
+## Python・AI・ChromaDB の役割
+
+- Python（FastAPI）: API の受付、処理フロー制御、データ整形を担当
+- AI（Gemini）: 埋め込み生成と最終回答生成を担当
+- ChromaDB: ドキュメントのベクトル保存と類似検索を担当
+
+### 質問応答のシーケンス図
+
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant User
+    participant API
+    participant AI
+    participant ChromaDB
+
+    User->>API: POST /api/v1/query
+    API->>AI: embed question
+    AI-->>API: query embedding
+
+    API->>ChromaDB: query similar chunks
+    ChromaDB-->>API: top-k chunks
+
+    API->>AI: generate answer with context
+    AI-->>API: answer text
+    API-->>User: response with answer and chunks
 ```
 
 ## コードの読み方（主要処理フロー）
