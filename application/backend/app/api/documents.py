@@ -59,8 +59,16 @@ def _build_document_response(index_entry: dict) -> Document:
     )
 
 
-@router.post("/documents", response_model=Document, status_code=201)
-async def upload_document(file: UploadFile = File(...)) -> Document:
+@router.post(
+    "/documents",
+    response_model=Document,
+    status_code=201,
+    summary="ドキュメントをアップロード",
+    description="テキストファイル (.txt) をアップロードして知識ベースに登録します。"
+    "アップロード直後はステータスが `pending` となり、別途ベクトル化が必要です。",
+    response_description="登録されたドキュメントのメタ情報",
+)
+async def upload_document(file: UploadFile = File(..., description="アップロードするテキストファイル (.txt)")) -> Document:
     # アップロードファイル名のバリデーション
     filename = Path(file.filename or "").name
     if not filename:
@@ -114,7 +122,13 @@ async def upload_document(file: UploadFile = File(...)) -> Document:
     return _build_document_response(index_data[document_id])
 
 
-@router.post("/documents/{document_id}/vectorize")
+@router.post(
+    "/documents/{document_id}/vectorize",
+    summary="ドキュメントをベクトル化",
+    description="指定したドキュメントをチャンクに分割し、埋め込みモデルでベクトル化して"
+    " ChromaDB に保存します。完了後はステータスが `processed` になります。",
+    response_description="ベクトル化結果（チャンク数・モデル情報など）",
+)
 async def vectorize_document(
     document_id: str,
     chunk_size: int = 500,
@@ -172,7 +186,12 @@ async def vectorize_document(
     }
 
 
-@router.get("/documents")
+@router.get(
+    "/documents",
+    summary="ドキュメント一覧を取得",
+    description="登録済みドキュメントの一覧を返します。`status` でフィルタリング、`limit`/`offset` でページングができます。",
+    response_description="ドキュメント一覧・件数・ページング情報",
+)
 async def list_documents(
     status: str | None = None,
     limit: int = 50,

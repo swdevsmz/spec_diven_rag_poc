@@ -19,7 +19,14 @@ from ..services.vectordb import get_vectordb_service
 router = APIRouter(prefix="/api/v1", tags=["query"])
 
 
-@router.post("/query", response_model=QueryResponse)
+@router.post(
+    "/query",
+    response_model=QueryResponse,
+    summary="RAG で質問に回答",
+    description="質問文を受け取り、ベクトル検索で関連ドキュメントを取得したうえで"
+    " Gemini が根拠付き回答を生成します。`top_k` 件のチャンクを根拠として使用します。",
+    response_description="生成された回答・根拠チャンク・使用モデル情報",
+)
 async def query_rag(payload: QueryRequest) -> QueryResponse:
     # 1リクエストごとに一意IDを付与
     settings = get_settings()
