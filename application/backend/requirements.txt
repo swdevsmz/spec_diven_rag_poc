@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic
+pydantic-settings
+httpx
+chromadb
+pytest
+pytest-asyncio
+python-multipart
+pysqlite3-binary
