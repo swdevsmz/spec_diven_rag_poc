@@ -59,11 +59,8 @@ LOG_LEVEL=INFO
 
 ```bash
 # DevContainer 内で実行する場合は uv が既にインストール済み
-uv venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-
-# 依存パッケージのインストール
-uv pip install -r requirements.txt
+# 仮想環境は作成せず、システム環境に依存関係をインストール
+uv pip install --system -r requirements.txt
 ```
 
 #### 必要なパッケージ（requirements.txt）
@@ -103,7 +100,7 @@ curl http://localhost:8001/api/v1/heartbeat
 
 ```bash
 cd backend
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uv run --with-requirements requirements.txt uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 **確認**:
@@ -135,8 +132,7 @@ FastAPI は、Python 3.7+ で API を構築するための、モダンで高速�
 
 ## インストール方法
 ```bash
-pip install fastapi
-pip install uvicorn[standard]
+uv pip install --system fastapi "uvicorn[standard]"
 ```
 
 ## 簡単な例
@@ -152,7 +148,7 @@ def read_root():
 
 このコードを save.py として保存し、以下で実行します:
 ```bash
-uvicorn main:app --reload
+uv run --with fastapi --with "uvicorn[standard]" uvicorn main:app --reload
 ```
 EOF
 ```
@@ -309,7 +305,7 @@ cat > data/evaluation/default_set.json << 'EOF'
     },
     {
       "question": "FastAPIをインストールする方法は？",
-      "expected_answer": "pip install fastapi と pip install uvicorn[standard]",
+      "expected_answer": "uv pip install --system fastapi \"uvicorn[standard]\"",
       "category": "installation"
     }
     // ... 残り8問

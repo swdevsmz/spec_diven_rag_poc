@@ -148,7 +148,7 @@ graph TD
 ### Integration (US1)
 
 - [X] T025 [US1] backend/app/main.py に queries ルーターを登録
-- [X] T026 [US1] テストデータ準備スクリプト scripts/prepare_test_data.py を作成（サンプルドキュメントをChromaDBに登録）
+- [X] T026 [US1] テストデータ準備スクリプト application/backend/data_setup/prepare_test_data.py を作成（サンプルドキュメントをChromaDBに登録）
 - [ ] T027 [US1] 手動テスト実施: curl または Swagger UI で質問応答をテスト
 
 **Parallel Execution Example (US1)**:

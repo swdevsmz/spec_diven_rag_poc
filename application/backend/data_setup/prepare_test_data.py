@@ -1,12 +1,17 @@
 from __future__ import annotations
+from app.utils.file_handlers import chunk_text, read_text_file
+from app.services.vectordb import get_vectordb_service
+from app.services.embedding import get_embedding
 
 import asyncio
 from pathlib import Path
+import sys
 from uuid import uuid4
 
-from backend.app.services.embedding import get_embedding
-from backend.app.services.vectordb import get_vectordb_service
-from backend.app.utils.file_handlers import chunk_text, read_text_file
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+BACKEND_ROOT = Path(__file__).resolve().parents[1]
+if str(BACKEND_ROOT) not in sys.path:
+    sys.path.insert(0, str(BACKEND_ROOT))
 
 
 def _collect_documents(documents_dir: Path) -> list[Path]:
@@ -22,7 +27,7 @@ async def _ingest_document(document_path: Path) -> None:
     collection = vectordb.get_collection()
 
     for index, chunk in enumerate(chunks):
-        embedding = await get_embedding(chunk)
+        embedding = await get_embedding(chunk, task_type="RETRIEVAL_DOCUMENT")
         chunk_id = str(uuid4())
         collection.add(
             documents=[chunk],
@@ -39,13 +44,13 @@ async def _ingest_document(document_path: Path) -> None:
 
 
 async def main() -> None:
-    documents_dir = Path("data/documents")
+    documents_dir = PROJECT_ROOT / "application" / "data" / "documents"
     if not documents_dir.exists():
-        raise RuntimeError("data/documents が存在しません。")
+        raise RuntimeError("application/data/documents が存在しません。")
 
     documents = _collect_documents(documents_dir)
     if not documents:
-        raise RuntimeError("data/documents に .txt ドキュメントがありません。")
+        raise RuntimeError("application/data/documents に .txt ドキュメントがありません。")
 
     for document_path in documents:
         await _ingest_document(document_path)

@@ -21,11 +21,13 @@ router = APIRouter(prefix="/api/v1", tags=["query"])
 
 @router.post("/query", response_model=QueryResponse)
 async def query_rag(payload: QueryRequest) -> QueryResponse:
+    # 1リクエストごとに一意IDを付与
     settings = get_settings()
     query_id = str(uuid4())
 
     try:
-        query_embedding = await get_embedding(payload.question)
+        # 1) 質問を埋め込み化して 2) 類似チャンク検索
+        query_embedding = await get_embedding(payload.question, task_type="RETRIEVAL_QUERY")
         vectordb = get_vectordb_service()
         chunks = vectordb.query_similar_chunks(query_embedding, payload.top_k)
     except Exception as exc:
@@ -38,6 +40,7 @@ async def query_rag(payload: QueryRequest) -> QueryResponse:
     )
 
     if not chunks:
+        # ヒットなし時は明示メッセージで返却
         return QueryResponse(
             query_id=query_id,
             question=payload.question,
@@ -49,6 +52,7 @@ async def query_rag(payload: QueryRequest) -> QueryResponse:
         )
 
     try:
+        # 検索結果を根拠に回答生成
         answer = await generate_answer(
             payload.question,
             [chunk["content"] for chunk in chunks],
@@ -58,6 +62,7 @@ async def query_rag(payload: QueryRequest) -> QueryResponse:
     except Exception as exc:
         raise HTTPException(status_code=500, detail="回答生成に失敗しました。") from exc
 
+    # APIレスポンス形式へ整形
     retrieved_chunks = [
         RetrievedChunk(
             chunk_id=chunk["chunk_id"],

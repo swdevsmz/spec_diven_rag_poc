@@ -7,3 +7,4 @@ chromadb
 pytest
 pytest-asyncio
 python-multipart
+pysqlite3-binary
